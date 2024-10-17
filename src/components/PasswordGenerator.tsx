@@ -1,21 +1,24 @@
-import { useRef, useState, useEffect } from "react";
-
+import { useRef, useState, useEffect, ChangeEvent } from "react";
 import { toast } from "react-toastify";
 
-function PasswordGenerator({ defaultLength = 16 }) {
-  const [password, setPassword] = useState(generateRandomPassword(defaultLength)); 
-  const [length, setLength] = useState(defaultLength); 
-  const lowercaseRef = useRef(null); 
-  const uppercaseRef = useRef(null); 
-  const numberRef = useRef(null); 
-  const symbolRef = useRef(null); 
+interface PasswordGeneratorProps {
+  defaultLength?: number;
+}
+
+function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
+  const [password, setPassword] = useState<string>(generateRandomPassword(defaultLength));
+  const [length, setLength] = useState<number>(defaultLength);
+
+  const lowercaseRef = useRef<HTMLInputElement>(null);
+  const uppercaseRef = useRef<HTMLInputElement>(null);
+  const numberRef = useRef<HTMLInputElement>(null);
+  const symbolRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     updatePassword();
   }, [length, lowercaseRef.current, uppercaseRef.current, numberRef.current, symbolRef.current]);
 
-
-  function generateRandomPassword(length) {
+  function generateRandomPassword(length: number): string {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let newPassword = "";
     for (let i = 0; i < length; i++) {
@@ -24,17 +27,16 @@ function PasswordGenerator({ defaultLength = 16 }) {
     return newPassword;
   }
 
-
-
   function updatePassword() {
-    const includeLowercase = lowercaseRef.current.checked; 
-    const includeUppercase = uppercaseRef.current.checked; 
-    const includeSymbol = symbolRef.current.checked; 
-    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz"; 
-    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
-    
-    const symbolChars = "!@#$%^&*()_+="; 
+    const includeLowercase = lowercaseRef.current?.checked || false;
+    const includeUppercase = uppercaseRef.current?.checked || false;
+    const includeNumber = numberRef.current?.checked || false;
+    const includeSymbol = symbolRef.current?.checked || false;
 
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const numberChars = "0123456789";
+    const symbolChars = "!@#$%^&*()_+=";
 
     let chars = "";
     if (includeLowercase) chars += lowercaseChars;
@@ -42,27 +44,28 @@ function PasswordGenerator({ defaultLength = 16 }) {
     if (includeNumber) chars += numberChars;
     if (includeSymbol) chars += symbolChars;
 
+    if (chars.length === 0) {
+      setPassword(""); // No categories selected
+      return;
+    }
 
     let newPassword = "";
     for (let i = 0; i < length; i++) {
       newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
-
     setPassword(newPassword);
   }
 
-
-  const handleLengthChange = (event) => {
-    const newLength = parseInt(event.target.value); 
-    setLength(newLength); 
-    updatePassword(); 
+  const handleLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newLength = parseInt(event.target.value);
+    setLength(newLength);
+    updatePassword();
   };
-
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(password);
-    toast.success("Contraseña copiada al portapapeles");
+    toast.success("Contraseña copiada al portapapeles");
   };
 
   return (
