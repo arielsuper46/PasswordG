@@ -1,13 +1,24 @@
+<<<<<<< Updated upstream
 import { useRef, useState, useEffect, ChangeEvent } from "react";
+=======
+import { useRef, useState, useEffect, useCallback } from "react";
+>>>>>>> Stashed changes
 import { toast } from "react-toastify";
 
 interface PasswordGeneratorProps {
   defaultLength?: number;
 }
 
+<<<<<<< Updated upstream
 function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
   const [password, setPassword] = useState<string>(generateRandomPassword(defaultLength));
   const [length, setLength] = useState<number>(defaultLength);
+=======
+const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ defaultLength = 16 }) => {
+  const [password, setPassword] = useState<string>(generateRandomPassword(defaultLength)); 
+
+  const [length, setLength] = useState<number>(defaultLength); 
+>>>>>>> Stashed changes
 
   const lowercaseRef = useRef<HTMLInputElement>(null);
   const uppercaseRef = useRef<HTMLInputElement>(null);
@@ -16,8 +27,12 @@ function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
 
   useEffect(() => {
     updatePassword();
-  }, [length, lowercaseRef.current, uppercaseRef.current, numberRef.current, symbolRef.current]);
+  }, [length, updatePassword]); 
 
+<<<<<<< Updated upstream
+=======
+  
+>>>>>>> Stashed changes
   function generateRandomPassword(length: number): string {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let newPassword = "";
@@ -27,7 +42,12 @@ function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
     return newPassword;
   }
 
+<<<<<<< Updated upstream
   function updatePassword() {
+=======
+ 
+  const updatePassword = useCallback(() => {
+>>>>>>> Stashed changes
     const includeLowercase = lowercaseRef.current?.checked || false;
     const includeUppercase = uppercaseRef.current?.checked || false;
     const includeNumber = numberRef.current?.checked || false;
@@ -44,28 +64,46 @@ function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
     if (includeNumber) chars += numberChars;
     if (includeSymbol) chars += symbolChars;
 
+<<<<<<< Updated upstream
     if (chars.length === 0) {
       setPassword(""); // No categories selected
       return;
     }
 
+=======
+>>>>>>> Stashed changes
     let newPassword = "";
     for (let i = 0; i < length; i++) {
       newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
     }
 
     setPassword(newPassword);
-  }
+  }, [length]);
 
+<<<<<<< Updated upstream
   const handleLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
+=======
+
+   
+  const handleLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+>>>>>>> Stashed changes
     const newLength = parseInt(event.target.value);
     setLength(newLength);
     updatePassword();
   };
 
+<<<<<<< Updated upstream
   const copyToClipboard = () => {
     navigator.clipboard.writeText(password);
     toast.success("Contraseña copiada al portapapeles");
+=======
+  
+  const copyToClipboard = () => {
+    if (password) {
+      navigator.clipboard.writeText(password);
+      toast.success("Contraseña copiada al portapapeles");
+    }
+>>>>>>> Stashed changes
   };
 
   return (
@@ -123,6 +161,6 @@ function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
       </div>
     </div>
   );
-}
+};
 
 export default PasswordGenerator;
