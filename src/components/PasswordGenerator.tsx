@@ -1,53 +1,30 @@
-<<<<<<< Updated upstream
-import { useRef, useState, useEffect, ChangeEvent } from "react";
-=======
 import { useRef, useState, useEffect, useCallback } from "react";
->>>>>>> Stashed changes
 import { toast } from "react-toastify";
 
 interface PasswordGeneratorProps {
   defaultLength?: number;
 }
 
-<<<<<<< Updated upstream
+// Mover esta función aquí arriba, antes de usarla en useState
+function generateRandomPassword(length: number): string {
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let newPassword = "";
+  for (let i = 0; i < length; i++) {
+    newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return newPassword;
+}
+
 function PasswordGenerator({ defaultLength = 16 }: PasswordGeneratorProps) {
   const [password, setPassword] = useState<string>(generateRandomPassword(defaultLength));
   const [length, setLength] = useState<number>(defaultLength);
-=======
-const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ defaultLength = 16 }) => {
-  const [password, setPassword] = useState<string>(generateRandomPassword(defaultLength)); 
-
-  const [length, setLength] = useState<number>(defaultLength); 
->>>>>>> Stashed changes
-
   const lowercaseRef = useRef<HTMLInputElement>(null);
   const uppercaseRef = useRef<HTMLInputElement>(null);
   const numberRef = useRef<HTMLInputElement>(null);
   const symbolRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    updatePassword();
-  }, [length, updatePassword]); 
-
-<<<<<<< Updated upstream
-=======
-  
->>>>>>> Stashed changes
-  function generateRandomPassword(length: number): string {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let newPassword = "";
-    for (let i = 0; i < length; i++) {
-      newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return newPassword;
-  }
-
-<<<<<<< Updated upstream
-  function updatePassword() {
-=======
- 
-  const updatePassword = useCallback(() => {
->>>>>>> Stashed changes
+  // Memorizar la función para que su referencia no cambie en cada render
+  const updatePassword = useCallback((): void => {
     const includeLowercase = lowercaseRef.current?.checked || false;
     const includeUppercase = uppercaseRef.current?.checked || false;
     const includeNumber = numberRef.current?.checked || false;
@@ -64,14 +41,11 @@ const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ defaultLength = 1
     if (includeNumber) chars += numberChars;
     if (includeSymbol) chars += symbolChars;
 
-<<<<<<< Updated upstream
-    if (chars.length === 0) {
-      setPassword(""); // No categories selected
+    if (chars === "") {
+      setPassword(""); // Si no se seleccionó ningún tipo de carácter
       return;
     }
 
-=======
->>>>>>> Stashed changes
     let newPassword = "";
     for (let i = 0; i < length; i++) {
       newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -80,30 +54,21 @@ const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ defaultLength = 1
     setPassword(newPassword);
   }, [length]);
 
-<<<<<<< Updated upstream
-  const handleLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
-=======
+  // Efecto que actualiza la contraseña cuando cambia la longitud
+  useEffect(() => {
+    updatePassword();
+  }, [length, updatePassword]);
 
-   
-  const handleLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
->>>>>>> Stashed changes
+  // Función para manejar el cambio de longitud de la contraseña
+  const handleLengthChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const newLength = parseInt(event.target.value);
     setLength(newLength);
-    updatePassword();
   };
 
-<<<<<<< Updated upstream
-  const copyToClipboard = () => {
+  // Copiar la contraseña al portapapeles
+  const copyToClipboard = (): void => {
     navigator.clipboard.writeText(password);
     toast.success("Contraseña copiada al portapapeles");
-=======
-  
-  const copyToClipboard = () => {
-    if (password) {
-      navigator.clipboard.writeText(password);
-      toast.success("Contraseña copiada al portapapeles");
-    }
->>>>>>> Stashed changes
   };
 
   return (
@@ -161,6 +126,6 @@ const PasswordGenerator: React.FC<PasswordGeneratorProps> = ({ defaultLength = 1
       </div>
     </div>
   );
-};
+}
 
 export default PasswordGenerator;
